@@ -19,6 +19,8 @@ import { action, createActions } from "../../store";
 import { LocalStore } from "../../local-store";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { RailroadListService } from "./railroad-list.service";
+import { Railroad } from './railroad-list.service';
 
 enum state {
   initializing = 0,
@@ -56,25 +58,6 @@ export class RailroadListStore extends LocalStore {
   }
 }
 
-interface Railroad {
-  name?: string;
-  code?: string;
-  city?: string;
-  state?: string;
-}
-
-const railroads: Railroad[] = [
-  {
-    name: "Amtrak",
-    code: "AT"
-  },
-  {
-    name: "Burlington Northern Sante Fe",
-    code: "BNSF",
-    city: "Fort Worth",
-    state: "TX"
-  }
-];
 
 @Injectable()
 class RouteSyncer {
@@ -98,7 +81,8 @@ export class RailroadListComponent implements OnInit {
   constructor(
     private readonly store: RailroadListStore,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly service: RailroadListService
   ) {}
 
   ngOnInit() {
@@ -122,6 +106,15 @@ export class RailroadListComponent implements OnInit {
         this.fc.enable({ emitEvent: false });
       }
     });
+
+    this.service.railroads$.subscribe(results => { 
+      console.log(results)
+      if (results.length > 0) {
+        this.store.dispatch(actions.moreThanOneResultLoaded(results));
+      } else {
+        this.store.dispatch(actions.noResultsReturned());
+      }
+    });
   }
 
   refresh() {
@@ -136,9 +129,6 @@ export class RailroadListComponent implements OnInit {
     this.store.dispatch(actions.noResultsReturned());
   }
 
-  manyResults() {
-    this.store.dispatch(actions.moreThanOneResultLoaded(railroads));
-  }
 
   errors() {
     this.store.dispatch(actions.errorLoadingRailroads());
