@@ -1,0 +1,24 @@
+<ng-container [ngSwitch]="state" *ngIf="state$ | async as state">
+	<br />
+	<div style="display: flex; justify-content: space-between;">
+		<button (click)="load()">Load Railroads</button>
+		<button (click)="noResults()">Simulate No Results</button>
+		<button (click)="manyResults()">Simulate Many Results</button>
+		<button (click)="errors()">Simulate Error</button>
+	</div>
+	<br />
+	<div style="display: flex; justify-content: space-between;">
+		<button (click)="retry()">Retry</button>
+		<button (click)="initialized()">Simulate Initialized</button>
+		<button (click)="initializationError()">Simulate Initialization Error</button>
+	</div>
+	<h4>Railroad List</h4>
+	<input placeholder="Search" [disabled]="state !== '1'" />
+  {{ state }}
+	<br />
+	<app-railroad-table *ngIf="state !== '2'"></app-railroad-table>
+	<p *ngIf="state === '2'" style="text-align:center;">
+		<span style="margin-right:4px;">{{ context$ | async }}</span>
+		<small><a [routerLink]="['/railroads/list']">Retry</a></small>
+	</p>
+</ng-container>
