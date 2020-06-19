@@ -99,7 +99,7 @@ export class RailroadListComponent implements OnInit {
       this.store.dispatch(actions.initialized());
     });
     this.fc.valueChanges.subscribe(search => {
-      console.log(search)
+      // console.log(search)
       this.router.navigate([], { queryParams: { search } });
     });
     this.state$.subscribe(state => {
