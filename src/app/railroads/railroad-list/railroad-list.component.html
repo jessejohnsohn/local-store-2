@@ -7,14 +7,10 @@
 		<button (click)="errors()">Simulate Error</button>
 	</div>
 	<br />
-	<div style="display: flex; justify-content: space-between;">
-		<button (click)="retry()">Retry</button>
-		<button (click)="initialized()">Simulate Initialized</button>
-		<button (click)="initializationError()">Simulate Initialization Error</button>
-	</div>
 	<h4>Railroad List</h4>
 	<input placeholder="Search" [disabled]="state !== '1'" />
-  {{ state }}
+  <button (click)="sync()">Sync</button>
+	<button (click)="initializationError()">Error Syncing</button>
 	<br />
 	<app-railroad-table *ngIf="state !== '2'"></app-railroad-table>
 	<p *ngIf="state === '2'" style="text-align:center;">

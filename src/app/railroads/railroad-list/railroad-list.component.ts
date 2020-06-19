@@ -1,9 +1,15 @@
-import { Component, ChangeDetectionStrategy, Injectable } from "@angular/core";
-import { ReplaySubject, of } from "rxjs";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Injectable,
+  OnInit
+} from "@angular/core";
+import { ReplaySubject, of, Observable } from "rxjs";
 import { scan, map, tap } from "rxjs/operators";
 import { action, createActions } from "../../store";
 import { LocalStore } from "../../local-store";
 import { FormControl } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 
 enum state {
   initializing = 0,
@@ -61,6 +67,14 @@ const railroads: Railroad[] = [
   }
 ];
 
+@Injectable()
+class RouteSyncer {
+  connect(subject: {
+    setValue: (value: any) => void;
+    valueChanges: Observable<any>;
+  }) {}
+}
+
 @Component({
   selector: "app-railroad-list",
   templateUrl: "./railroad-list.component.html",
@@ -72,9 +86,24 @@ export class RailroadListComponent implements OnInit {
   readonly context$ = this.store.context$;
   readonly fc = new FormControl("");
 
-  constructor(private readonly store: RailroadListStore) { }
+  constructor(
+    private readonly store: RailroadListStore,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {}
 
-  sync() {}
+  ngOnInit() {
+    this.route.params.subscribe(p => this.fc.setValue(p.search));
+    this.fc.valueChanges.subscribe(search => {
+      console.log(search)
+      this.router.navigate([], { queryParams: { search } })
+    }
+    );
+  }
+
+  sync() {
+    this.store.dispatch(actions.initialized());
+  }
 
   load() {
     this.store.dispatch(actions.loadButtonClicked());
