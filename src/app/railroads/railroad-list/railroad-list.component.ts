@@ -5,7 +5,7 @@ import {
   OnInit
 } from "@angular/core";
 import { ReplaySubject, of, Observable } from "rxjs";
-import { scan, map, tap } from "rxjs/operators";
+import { scan, map, tap, distinctUntilChanged, delay } from "rxjs/operators";
 import { action, createActions } from "../../store";
 import { LocalStore } from "../../local-store";
 import { FormControl } from "@angular/forms";
@@ -93,16 +93,22 @@ export class RailroadListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(p => this.fc.setValue(p.search));
+    this.route.queryParams.pipe(delay(2000)).subscribe(p => {
+      console.log('router value:', p)
+      // this.fc.setValue(p.search);
+      this.store.dispatch(actions.initialized());
+    });
     this.fc.valueChanges.subscribe(search => {
       console.log(search)
-      this.router.navigate([], { queryParams: { search } })
-    }
-    );
-  }
-
-  sync() {
-    this.store.dispatch(actions.initialized());
+      this.router.navigate([], { queryParams: { search } });
+    });
+    this.state$.subscribe(state => {
+      if (state !== "1") {
+        this.fc.disable({emitEvent: false});
+      } else {
+        this.fc.enable({emitEvent: false});
+      }
+    });
   }
 
   load() {

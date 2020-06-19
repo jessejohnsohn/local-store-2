@@ -8,8 +8,7 @@
 	</div>
 	<br />
 	<h4>Railroad List</h4>
-	<input placeholder="Search" [disabled]="state !== '1'" />
-  <button (click)="sync()">Sync</button>
+	<input [formControl]="fc" placeholder="Search" />
 	<button (click)="initializationError()">Error Syncing</button>
 	<br />
 	<app-railroad-table *ngIf="state !== '2'"></app-railroad-table>

@@ -4,6 +4,7 @@ import { RailroadListComponent } from './railroad-list.component';
 import { RouterModule, Routes } from '@angular/router';
 import { railroadListPaths } from './railroad-list.routes';
 import { RailroadTableComponent } from './railroad-table/railroad-table.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -15,7 +16,9 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [RailroadListComponent, RailroadTableComponent],
   exports: [
