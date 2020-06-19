@@ -1,5 +1,5 @@
 import { noop, Subject, Observable, of, ReplaySubject, defer } from "rxjs";
-import { scan, startWith, map, tap, mapTo } from "rxjs/operators";
+import { scan, startWith, map, tap, mapTo, shareReplay } from "rxjs/operators";
 
 export class LocalStore {
   private readonly _actions = new ReplaySubject<any>();
@@ -15,15 +15,16 @@ export class LocalStore {
     scan((a, c) => {
       return this.config[a()[c.name]] || a;
     }),
-    map(s => s.name)
+    map(s => s.name),
   );
 
   context$ = this._actions.pipe(
     scan((a, c) => {
       const nextState = this.config[a()[c.name]];
-      return nextState ? ({ state: nextState, payload: c.payload }) : a;
+      return nextState ? () => ({ state: nextState, payload: c.payload }) : a;
     }),
-    map(state => state.payload)
+    map(state => state().payload),
+    shareReplay(1)
   );
 
   dispatch(action: any) {

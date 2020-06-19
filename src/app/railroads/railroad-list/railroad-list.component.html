@@ -6,14 +6,12 @@
 		<button (click)="manyResults()">Simulate Many Results</button>
 		<button (click)="errors()">Simulate Error</button>
 	</div>
-	<br />
 	<h4>Railroad List</h4>
 	<input [formControl]="fc" placeholder="Search" />
-	<button (click)="initializationError()">Error Syncing</button>
 	<br />
 	<app-railroad-table *ngIf="state !== '2'"></app-railroad-table>
 	<p *ngIf="state === '2'" style="text-align:center;">
 		<span style="margin-right:4px;">{{ context$ | async }}</span>
-		<small><a [routerLink]="['/railroads/list']">Retry</a></small>
+		<small><a [routerLink]="" (click)="refresh()">Retry</a></small>
 	</p>
 </ng-container>
