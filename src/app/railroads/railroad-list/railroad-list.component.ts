@@ -108,7 +108,6 @@ export class RailroadListComponent implements OnInit {
     });
 
     this.service.railroads$.subscribe(results => { 
-      console.log(results)
       if (results.length > 0) {
         this.store.dispatch(actions.moreThanOneResultLoaded(results));
       } else {
